@@ -1,36 +1,105 @@
 ---
-title: "American Regional Age Distribution Dashboard"
+title: "World Measles Status Dashboard"
 output: 
   flexdashboard::flex_dashboard:
+    theme: readable
     orientation: columns
+    source_code: embed
     vertical_layout: fill
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(here)
+library(shiny)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
 ```
+
+About
+===================================== 
 
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Purpose
+**What is the purpose of this dashboard?**
+There exists huge inequality on the measle vaccination coverage and measles related mortality over the world. This descriptive analysis aims to visually depict this inequality, offering the audience a fundamental understanding of the impact of measles vaccination. To effectively address the aforementioned question, I propose dividing it into two distinct parts.
 
-```{r}
+1\. **Global Analysis of Measles Mortality and Vaccination Coverage:**
+
+-   What is the current status of measles incidence rates worldwide?
+
+-   How does vaccination coverage vary across continents?
+
+2\. **Country-Specific Examination:**
+
+-   What is the prevalence and impact of measles in India, Nigeria, China, and the United States?
+
+-   How do vaccination coverage and mortality rates differ among these selected countries?
+
+```{r global}
+if (!file.exists("data")) {
+  dir.create("data")
+}
+
+measles_data <- read.csv(here("data", "Measle_Incidence.csv"))
+geo_location <- read.csv(here("data", "geo_location.csv"))
+measles_vaccination <- read.csv(here("data", "measle_vaccination.csv"))
+
+measles_data <- measles_data %>% mutate_all(na_if, "")
+measles_data <- left_join(measles_data, geo_location, by = c("Country" = "name"))
+
+measles_data <- measles_data %>%
+  rename_at(vars(starts_with("x")), ~substr(., 2, nchar(.)))
+measles_data <- gather(measles_data, key = "Year", value = "Cases", -Country, -Disease)
+measles_data$Cases <- as.integer(gsub(",", "", measles_data$Cases))
 
 ```
+
+### Data Source
+
+his data is acquired from World Health Organization, which is publicly available and can be downloaded [here](https://immunizationdata.who.int/listing.html?topic=&location=).
+
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Video Demo
 
 ```{r}
 
 ```
 
-### Chart C
 
-```{r}
+Data
+===================================== 
 
+Column {data-width=650}
+-----------------------------------------------------------------------
+### **Data Description**
+| variable           | class     | description                                          |
+|:----------------------|:------------------|:-----------------------------|
+| Country            | character | country where Measles disease happen                 |
+| Disease            | character | disease name                                         |
+| Year               | character | abbreviation of away team name                       |
+| Cases              | integer   | abbreviation of home team name                       |
+
+#### Measles Incidence Data
+
+```{r DTprep, echo=FALSE}
+#DT_df <- olympics %>%
+#  dplyr::select(-c(id))
 ```
+
+
+
+
+
+
+
+
+
 
