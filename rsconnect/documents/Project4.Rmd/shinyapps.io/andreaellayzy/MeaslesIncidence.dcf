@@ -5,7 +5,7 @@ account: andreaellayzy
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10840946
-bundleId: 8077539
+bundleId: 8079399
 url: https://andreaellayzy.shinyapps.io/MeaslesIncidence/
 version: 1
 asMultiple: FALSE
